@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+text {
+	font: bold 36px monospace;
+}
+
+.enter {
+	fill: green;
+}
+
+.update {
+	fill: red;
+}
+
+</style>
+
+<h1>A Suggested Simple Step by Step Workflow for D3 Development and Learning</h1>
+
+<p>The following is indended to be a suggested work flow. It's not meant to be a perfect work flow, there's no such thing.  But the general idea is to try use these steps to help guide your development and learning of d3. </p>
+
+<p>Learning d3.js and creating data visualizations can be very overwhelming. It's very easy to focus on bits and pieces of the process randomly. To help with this, I felt that I need some sort of structure to help guide me learn d3.js and also create a data visualization.</p>
+
+<p>I recommend you using some sort of structured work flow for your work. Just choose something you're comfortable with, even a simple written list would probably help. The point is that you want to avoid be scattered brain, and work in a very deliberate way which minimizes stress, and keeps your creative energy as high as possible.  </p> 
+
+<p>Over the past few years I've used several programming languages.  Some which I like better than others. But more recently I'm an R and Arduino user, therefore I've written this guide using some verbs and adjectives from each. I have chosen these pieces of grammer by trying to pick words that are intuitive, but yet try to keep with the general spirit of d3 development. But there's no free lunch here. For example, instead of really using the verb "visualize" or "render", or "update", I use the verb "plot". This is a bit of a negative because d3.js is not intended to be a plotting library. But since the verb "plot" can be understood by a beginner and generally easy to read, I use it in place of d3.js sytle.</p>
+
+<p>I'm going to start by briefly describing what you're going to study below. First there's an assumption section. The point of this assuptions section is get the very basic and critical components out of the way. Laslty, I'm going to describe three commented sections of a visualization that are typically in any every visualization but they're not very obvious to the beginner. </p>
+
+
+
+<h2>Assumptions</h2>
+
+<p>Here we're going to deal with the stuff that's not very exciting but we have to deal with it or we're not going to get anywhere. Using this part of the workflow as your guide you want to make sure the following are well defined. First is your html setup. Is it setup correctly? Will it work with client's old PC? Next is your CSS. Does your CSS define small details like the stroke of an svg or text color? Next, you're going to define your svg tag with the very basics of width and height. Finally, you need to properly import the d3 library. When you're done with this section, you've satisfied declaring the basic assumptions for d3 development.</p>
+
+<ol>
+	<li>HTML</li>
+	<li>CSS</li>
+	<li>SVG</li>
+	<li>D3</li>
+</ol>
+
+
+<h2> Three Main Plot Components</h2>
+<ol>
+	<li>Setup</li>
+	<li>Loop</li>
+	<li>Void</li>
+</ol>
+
+<h2>Step 1. Setup</h2>
+<p>Here you're going to handle four major operations with the help of d3.js.  First you're going to define the <code>data</code> object. Second, you're going define an accessor function to access the svg by creating an object called <code>svg</code>. Third, you're going to define a group <code>g</code> for referencing your plot.</p> Lastly you're going to call your <code>plot()</code> function to render your initial plot.</p>
+<ol>
+	<li>Data</li>
+	<li>SVG</li>
+	<li>Group</li>
+	<li>Initial Plot</li>
+</ol>
+
+<h2>Step 2. Loop</h2>
+<p>Now you're going to define the interval for getting new data and rendering a new plot</p>
+<ol>
+	<li>Interval</li>
+	<li><code>plot(data)</code></li>
+</ol>
+
+
+<h2>Step 3. Void</h2>
+<p>Here you're going to declare your plotting function. Your function will have four major steps that occur in almost plot. The first will be creating the data join with an svg element. The second will be an update. Third, you'll define an enter and update. Lastly, you'll define an exit.</p>
+
+	<ol>
+	<li>Join</li>
+	<li>Update</li>
+	<li>Enter + Update</li>
+	<li>Exit</li>
+</ol>
+
+<svg width = "960" heigh = "600"></svg>
+<script src = "https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+// Setup ---------------------------
+
+var data = "abcdefghijklmnopqurstuvwxyz".split("");
+
+var svg = d3.select("svg"),
+	width = +svg.attr("width"),
+	height = +svg.attr("height"),
+	g = svg.append("g").attr("transform", "translate(32," + (height /2) + ")");
+
+plot(data);
+
+// Loop ---------------------------
+
+d3.interval(function() {
+  plot(d3.shuffle(data)
+      .slice(0, Math.floor(Math.random() * 26))
+      .sort());
+}, 1500);
+
+// Void ---------------------------
+
+function plot(x) {
+
+	var join = g.selectAll("text")
+		.data(x)
+
+	var update = join.attr("class", "update");
+
+	var enterUpdate = join.enter().append("text")
+		.attr("class", "enter")
+		.attr("x", function(d, i) { return i *32; })
+		.attr("dy", ".6em")
+	   .merge(join)
+	    .text(function(d) { return d; });
+
+	 var exit = join.exit().remove();
+}
+
+</script>
+
